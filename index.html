@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>আমার বাজার - সম্পূর্ণ ফিচার</title>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    body {
+      background-color: #f5f5f5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    /* Header */
+    header {
+      background-color: #f85606;
+      color: white;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    header h1 {
+      font-size: 24px;
+      cursor: pointer;
+    }
+    .search-bar {
+      flex: 1;
+      margin: 0 20px;
+      display: flex;
+    }
+    .search-bar input {
+      flex: 1;
+      padding: 8px;
+      border: none;
+      border-radius: 4px 0 0 4px;
+      font-size: 16px;
+    }
+    .search-bar button {
+      padding: 8px 12px;
+      background-color: #333;
+      color: white;
+      border: none;
+      border-radius: 0 4px 4px 0;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .user-cart {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      font-size: 20px;
+      cursor: pointer;
+      position: relative;
+    }
+    /* Cart count bubble */
+    .cart-count {
+      position: absolute;
+      top: -6px;
+      right: -10px;
+      background: #0a0;
+      color: white;
+      font-size: 12px;
+      font-weight: bold;
+      padding: 2px 6px;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    /* Navbar */
+    nav {
+      background-color: white;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 56px;
+      z-index: 999;
+    }
+    nav ul {
+      display: flex;
+      gap: 20px;
+      list-style: none;
+      padding: 10px 20px;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+    }
+    nav ul li {
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background-color 0.3s;
+      font-weight: 600;
+    }
+    nav ul li:hover,
+    nav ul li.active {
+      background-color: #f85606;
+      color: white;
+    }
+
+    /* Hamburger for mobile */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      cursor: pointer;
+      gap: 5px;
+      width: 25px;
+      height: 20px;
+      justify-content: center;
+    }
+    .hamburger div {
+      background: white;
+      height: 3px;
+      border-radius: 2px;
+      transition: 0.3s;
+    }
+    nav.mobile-open ul {
+      flex-direction: column;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    /* Banner slider */
+    .banner-slider {
+      width: 100%;
+      max-height: 250px;
+      overflow: hidden;
+      position: relative;
+      margin-top: 10px;
+    }
+    .banner-slider img {
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+      transition: opacity 0.5s ease-in-out;
+      position: absolute;
+      top: 0;
+      left: 0;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .banner-slider img.active {
+      opacity: 1;
+      position: relative;
+      pointer-events: auto;
+    }
+    .slider-dots {
+      position: absolute;
+      bottom: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+    }
+    .slider-dots div {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #fff;
+      opacity: 0.5;
+      cursor: pointer;
+      transition: opacity 0.3s;
+      border: 1.5px solid #f85606;
+    }
+    .slider-dots div.active {
+      opacity: 1;
+      background: #f85606;
+    }
+
+    /* Products grid */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 20px;
+      padding: 20px;
+      flex-grow: 1;
+    }
+    .product {
+      background-color: white;
+      border-radius: 6px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      transition: transform 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .product:hover {
+      transform: scale(1.03);
+    }
+    .product img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+    .product-info {
+      padding: 10px;
+    }
+    .product-info h4 {
+      margin-bottom: 6px;
+      font-size: 16px;
+      height: 44px;
+      overflow: hidden;
+    }
+    .product-info p {
+      color: green;
+      font-weight: bold;
+      font-size: 18px;
+    }
+    .product button {
+      background-color: #f85606;
+      border: none;
+      color: white;
+      padding: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      border-radius: 0 0 6px 6px;
+      transition: background-color 0.3s;
+    }
+    .product button:hover {
+      background-color: #d64403;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 20px;
+      background-color: #f85606;
+      color: white;
+      margin-top: 20px;
+    }
+
+    /* Modal for login/signup */
+    .modal-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+    }
+    .modal-bg.active {
+      display: flex;
+    }
+    .modal {
+      background: white;
+      width: 320px;
+      border-radius: 8px;
+      padding: 20px;
+      position: relative;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+      animation: popup 0.3s ease forwards;
+    }
+    @keyframes popup {
+      from {
+        transform: translateY(-40px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+    .modal h2 {
+      margin-bottom: 20px;
+      text-align: center;
+      color: #f85606;
+    }
+    .modal form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    .modal input {
+      padding: 10px;
+      font-size: 16px;
+      border: 1.5px solid #ccc;
+      border-radius: 4px;
+    }
+    .modal button {
+      background-color: #f85606;
+      border: none;
+      color: white;
+      padding: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: background-color 0.3s;
+    }
+    .modal button:hover {
+      background-color: #d64403;
+    }
+    .close-btn {
+      position: absolute;
+      right: 15px;
+      top: 15px;
+      font-size: 18px;
+      color: #f85606;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      header {
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .search-bar {
+        margin: 0;
+        order: 3;
+        width: 100%;
+      }
+      nav ul {
+        display: none;
+        flex-direction: column;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+      }
+      nav.mobile-open ul {
+        display: flex;
+        max-height: 300px;
+      }
+      .hamburger {
+        display: flex;
+      }
+      .user-cart {
+        gap: 10px;
+      }
+      .product-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1 onclick="location.reload()">আমার বাজার</h1>
+    <div class="search-bar">
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="পণ্য খুঁজুন..."
+        oninput="filterProducts()"
+      />
+      <button onclick="filterProducts()">
+        <i class="fa fa-search"></i>
+      </button>
+    </div>
+    <div class="user-cart">
+      <i class="fa fa-shopping-cart" id="cartIcon"></i>
+      <span class="cart-count" id="cartCount">0</span>
+      <i class="fa fa-user" id="userIcon"></i>
+      <div class="hamburger" id="hamburger" title="মেনু">
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+    </div>
+  </header>
+
+  <nav id="navbar">
+    <ul>
+      <li class="active" onclick="filterCategory('all')">সব</li>
+      <li onclick="filterCategory('মোবাইল')">মোবাইল</li>
+      <li onclick="filterCategory('ইলেকট্রনিক্স')">ইলেকট্রনিক্স</li>
+      <li onclick="filterCategory('জামা কাপড়')">জামা কাপড়</li>
+      <li onclick="filterCategory('বাসা ভাড়া')">বাসা ভাড়া</li>
+      <li onclick="filterCategory('গাড়ি')">গাড়ি</li>
+      <li onclick="filterCategory('ফার্নিচার')">ফার্নিচার</li>
+      <li onclick="filterCategory('সার্ভিস')">সার্ভিস</li>
+    </ul>
+  </nav>
+
+  <!-- Banner Slider -->
+  <section class="banner-slider" id="bannerSlider">
+    <img
+      src="https://images.unsplash.com/photo-1590080877777-9d47b542e9a7?auto=format&fit=crop&w=1350&q=80"
+      class="active"
+      alt="ব্যানার ১"
+    />
+    <img
+      src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1350&q=80"
+      alt="ব্যানার ২"
+    />
+    <img
+      src="https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=1350&q=80"
+      alt="ব্যানার ৩"
+    />
+
+    <img
+         src="https://images.unsplash.com/photo-1590080877777-9d47b542e9a7?auto=format&fit=crop&w=1350&q=80"
+            alt="ব্যানার 4"
+      />
+    <div class="slider-dots" id="sliderDots"></div>
+  </section>
+
+  <!-- Products Grid -->
+  <section class="product-grid" id="productGrid">
+    <!-- Products will be dynamically injected here -->
+  </section>
+
+  <!-- Login / Signup Modal -->
+  <div class="modal-bg" id="modalBg">
+    <div class="modal" id="modal">
+      <span class="close-btn" id="closeModal">&times;</span>
+      <h2 id="modalTitle">লগইন করুন</h2>
+      <form id="authForm">
+        <input
+          type="email"
+          id="email"
+          placeholder="ইমেইল লিখুন"
+          required
+          autocomplete="username"
+        />
+        <input
+          type="password"
+          id="password"
+          placeholder="পাসওয়ার্ড লিখুন"
+          required
+          autocomplete="current-password"
+          minlength="6"
+        />
+        <button type="submit" id="submitBtn">লগইন</button>
+      </form>
+      <p style="margin-top: 10px; text-align: center;">
+        নতুন ইউজার? <a href="#" id="toggleAuth">সাইন আপ করুন</a>
+      </p>
+    </div>
+  </div>
+
+  <footer>© ২০২৫ আমার বাজার. সর্বস্বত্ব সংরক্ষিত।</footer>
+
+  <script>
+    // Product data sample
+    const products = [
+      {
+        id: 1,
+        title: "স্যামসাং গ্যালাক্সি A12",
+        price: 13500,
+        category: "মোবাইল",
+        img: "https://via.placeholder.com/200x180?text=Samsung+A12",
+      },
+      {
+        id: 2,
+        title: "পুরুষদের টি-শার্ট",
+        price: 450,
+        category: "জামা কাপড়",
+        img: "https://via.placeholder.com/200x180?text=Men+T-Shirt",
+      },
+      {
+        id: 3,
+        title: "ল্যাপটপ - HP",
+        price: 32000,
+        category: "ইলেকট্রনিক্স",
+        img: "https://via.placeholder.com/200x180?text=HP+Laptop",
+      },
+      {
+        id: 4,
+        title: "সোফা সেট",
+        price: 15000,
+        category: "ফার্নিচার",
+        img: "https://via.placeholder.com/200x180?text=Sofa+Set",
+      },
+      {
+        id: 5,
+        title: "বাসা ভাড়া - ২ রুম",
+        price: 12000,
+        category: "বাসা ভাড়া",
+        img: "https://via.placeholder.com/200x180?text=House+Rent",
+      },
+      {
+        id: 6,
+        title: "গাড়ি - টয়োটা",
+        price: 1500000,
+        category: "গাড়ি",
+        img: "https://via.placeholder.com/200x180?text=Toyota+Car",
+      },
+      {
+        id: 7,
+        title: "কম্পিউটার সার্ভিস",
+        price: 500,
+        category: "সার্ভিস",
+        img: "https://via.placeholder.com/200x180?text=Computer+Service",
+      },
+    ];
+
+    // Initial cart - from localStorage or empty
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+    // Update cart count badge
+    function updateCartCount() {
+      const countEl = document.getElementById("cartCount");
+      countEl.textContent = cart.length;
+      countEl.style.display = cart.length > 0 ? "inline-block" : "none";
+    }
+
+    // Render products to grid
+    function renderProducts(filteredProducts = products) {
+      const grid = document.getElementById("productGrid");
+      grid.innerHTML = "";
+      if (filteredProducts.length === 0) {
+        grid.innerHTML =
+          '<p style="grid-column: 1/-1; text-align:center; font-size:18px; color:#888;">কোনো পণ্য পাওয়া যায়নি।</p>';
+        return;
+      }
+      filteredProducts.forEach((p) => {
+        const productEl = document.createElement("div");
+        productEl.classList.add("product");
+        productEl.innerHTML = `
+          <img src="${p.img}" alt="${p.title}" />
+          <div class="product-info">
+            <h4>${p.title}</h4>
+            <p>৳${p.price.toLocaleString()}</p>
+          </div>
+          <button onclick="addToCart(${p.id})">কার্টে যোগ করুন</button>
+        `;
+        grid.appendChild(productEl);
+      });
+    }
+
+    // Filter products by category
+    function filterCategory(category) {
+      document.querySelectorAll("nav ul li").forEach((li) =>
+        li.classList.remove("active")
+      );
+      if (category === "all") {
+        renderProducts(products);
+        document.querySelector("nav ul li:first-child").classList.add("active");
+      } else {
+        renderProducts(products.filter((p) => p.category === category));
+        document
+          .querySelectorAll("nav ul li")
+          .forEach((li) => {
+            if (li.textContent === category) li.classList.add("active");
+          });
+      }
+    }
+
+    // Search products by text
+    function filterProducts() {
+      const input = document.getElementById("searchInput").value.trim().toLowerCase();
+      if (input === "") {
+        filterCategory("all");
+        return;
+      }
+      const filtered = products.filter((p) =>
+        p.title.toLowerCase().includes(input)
+      );
+      renderProducts(filtered);
+      document.querySelectorAll("nav ul li").forEach((li) =>
+        li.classList.remove("active")
+      );
+    }
+
+    // Add to cart
+    function addToCart(id) {
+      const product = products.find((p) => p.id === id);
+      if (!product) return;
+      // Prevent duplicates
+      if (cart.some((item) => item.id === id)) {
+        alert("পণ্য ইতিমধ্যে কার্টে আছে!");
+        return;
+      }
+      cart.push(product);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      updateCartCount();
+      alert("পণ্য কার্টে যোগ করা হয়েছে!");
+    }
+
+    // Banner Slider
+    const banners = document.querySelectorAll(".banner-slider img");
+    const dotsContainer = document.getElementById("sliderDots");
+    let currentBanner = 0;
+
+    function createDots() {
+      banners.forEach((_, i) => {
+        const dot = document.createElement("div");
+        dot.addEventListener("click", () => showBanner(i));
+        if (i === 0) dot.classList.add("active");
+        dotsContainer.appendChild(dot);
+      });
+    }
+
+    function showBanner(index) {
+      banners[currentBanner].classList.remove("active");
+      dotsContainer.children[currentBanner].classList.remove("active");
+      currentBanner = index;
+      banners[currentBanner].classList.add("active");
+      dotsContainer.children[currentBanner].classList.add("active");
+    }
+
+    function nextBanner() {
+      let next = currentBanner + 1;
+      if (next >= banners.length) next = 0;
+      showBanner(next);
+    }
+
+    // Auto slide every 4 seconds
+    setInterval(nextBanner, 4000);
+
+    // Hamburger menu toggle
+    const hamburger = document.getElementById("hamburger");
+    const navbar = document.getElementById("navbar");
+    hamburger.addEventListener("click", () => {
+      navbar.classList.toggle("mobile-open");
+      hamburger.classList.toggle("active");
+    });
+
+    // Login / Signup modal logic
+    const modalBg = document.getElementById("modalBg");
+    const modal = document.getElementById("modal");
+    const userIcon = document.getElementById("userIcon");
+    const closeModalBtn = document.getElementById("closeModal");
+    const modalTitle = document.getElementById("modalTitle");
+    const authForm = document.getElementById("authForm");
+    const toggleAuthLink = document.getElementById("toggleAuth");
+    const submitBtn = document.getElementById("submitBtn");
+
+    let isLogin = true; // Track login/signup toggle
+
+    userIcon.addEventListener("click", () => {
+      modalBg.classList.add("active");
+      isLogin = true;
+      modalTitle.textContent = "লগইন করুন";
+      submitBtn.textContent = "লগইন";
+      toggleAuthLink.textContent = "সাইন আপ করুন";
+      authForm.reset();
+    });
+
+    closeModalBtn.addEventListener("click", () => {
+      modalBg.classList.remove("active");
+    });
+
+    toggleAuthLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      isLogin = !isLogin;
+      if (isLogin) {
+        modalTitle.textContent = "লগইন করুন";
+        submitBtn.textContent = "লগইন";
+        toggleAuthLink.textContent = "সাইন আপ করুন";
+        authForm.password.autocomplete = "current-password";
+        authForm.email.autocomplete = "username";
+      } else {
+        modalTitle.textContent = "সাইন আপ করুন";
+        submitBtn.textContent = "সাইন আপ";
+        toggleAuthLink.textContent = "লগইন করুন";
+        authForm.password.autocomplete = "new-password";
+        authForm.email.autocomplete = "email";
+      }
+      authForm.reset();
+    });
+
+    // Fake authentication handler
+    authForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const email = authForm.email.value.trim();
+      const password = authForm.password.value.trim();
+      if (!email || !password) {
+        alert("সঠিক তথ্য প্রদান করুন।");
+        return;
+      }
+      if (isLogin) {
+        alert(`স্বাগতম, ${email}! আপনি লগইন করেছেন।`);
+      } else {
+        alert(`রেজিস্ট্রেশন সম্পন্ন হয়েছে, ${email}! এখন লগইন করুন।`);
+      }
+      modalBg.classList.remove("active");
+    });
+
+    // Initial setup
+    createDots();
+    renderProducts();
+    updateCartCount();
+  </script>
+</body>
+</html>
